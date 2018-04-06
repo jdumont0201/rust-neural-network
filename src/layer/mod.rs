@@ -1,6 +1,6 @@
 use neuron::Neuron;
 //use topology::Topology;
-use transfer_functions::TransferFunctionTypes;
+use utils::TransferFunctionTypes;
 
 pub struct Layer {
     pub id:usize,

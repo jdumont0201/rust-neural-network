@@ -1,4 +1,4 @@
-
+use rand::{Rng, thread_rng};
 pub enum TransferFunctionTypes {
     LINEAR,
     BINARY,
@@ -30,4 +30,9 @@ pub fn transfer_function_tanh(val: f64) -> f64 {
     let exp=(val).exp();
     let expm=(-val).exp();
     (exp-expm)/(exp+expm)
+}
+
+pub fn random_weight() -> f64{
+    let mut rng = thread_rng();
+    rng.gen()
 }

@@ -1,7 +1,8 @@
 use layer::Layer;
 use neuron::Neuron;
 use input::Input;
-use transfer_functions::transfer_function;
+use utils::transfer_function;
+use utils::random_weight;
 
 pub struct Topology {
     pub layers: Vec<Layer>,
@@ -78,7 +79,7 @@ impl Topology {
                     let mut I = Vec::new();
                     for n2 in 0..L[prev].neurons.len() {
                         //add neuron previous layer
-                        let id = Input { layer: prev, neuron: n2, weight: 1., val: 0. };
+                        let id = Input { layer: prev, neuron: n2, weight: random_weight(), val: 0. };
                         I.push(id);
                     }
                     L[l].neurons[n].inputs = I;
@@ -163,7 +164,7 @@ impl Topology {
 
     /*
     Compute the overall error.
-    Using RMS (mean square) method
+    Using RMS (root mean square) method
     */
     pub fn compute_errors(&mut self) {
         let mut error = 0.;

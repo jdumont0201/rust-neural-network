@@ -1,7 +1,7 @@
 use input::Input;
 //use topology::Topology;
 use layer::Layer;
-use transfer_functions::TransferFunctionTypes;
+use utils::TransferFunctionTypes;
 pub struct Neuron {
     pub id:i8,
     pub layer_id:usize,
