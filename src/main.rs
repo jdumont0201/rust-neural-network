@@ -1,7 +1,7 @@
 extern crate rand;
 
 //CUSTOM MODULES
-mod input;
+mod connection;
 mod neuron;
 mod layer   ;
 mod topology;

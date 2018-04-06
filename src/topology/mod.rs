@@ -1,6 +1,6 @@
 use layer::Layer;
 use neuron::Neuron;
-use input::Input;
+use connection::Connection;
 use utils::transfer_function;
 use utils::random_weight;
 
@@ -66,7 +66,7 @@ impl Topology {
     }
     /*
         Creates the links between the neurons.
-        In other words, sets the inputs for each layer of
+        In other words, sets the connections for each layer of
          If initial layer, the single input
     */
     pub fn link_neurons(&mut self) {
@@ -78,22 +78,22 @@ impl Topology {
                 if idx > 0 {
                     //if layer is not initial layer, then link
                     let prev = idx - 1;
-                    //create list of inputs for this neuron
+                    //create list of connections for this neuron
                     let mut I = Vec::new();
                     for n2 in 0..L[prev].neurons.len() {
                         //add neuron previous layer
-                        let id = Input { layer: prev, neuron: n2, weight: random_weight(), val: 0. };
+                        let id = Connection { layer: prev, neuron: n2, weight: random_weight(), val: 0. };
                         I.push(id);
                     }
                     println!("Linking neuron L{}-N{} to {} neurons", idx, n, I.len());
-                    L[idx].neurons[n].inputs = I;
+                    L[idx].neurons[n].connections = I;
 
                 } else {
                     let mut I = Vec::new();
-                    let id = Input { layer: 0, neuron: 0, weight: 1., val: 0.64 };
+                    let id = Connection { layer: 0, neuron: 0, weight: 1., val: 0.64 };
                     I.push(id);
                     println!("Linking neuron L{}-N{} to {} neurons", idx, n, I.len());
-                    L[idx].neurons[n].inputs = I;
+                    L[idx].neurons[n].connections = I;
                 }
             }
         }
@@ -128,18 +128,18 @@ impl Topology {
                         //distinguish initial layer
                         true => {
                             //initial layer neuron are just sending their input
-                            let input = &n.inputs[0];//initial layer neurons are single input
-                            let val = input.val;
+                            let connection = &n.connections[0];//initial layer neurons are single input
+                            let val = connection.val;
                             println!("  L{}-N{}-I{} compute: output={} ", n.layer_id, n.id, 0, val);
                             outputs.push(val);
                         }
                         false => {
                             let mut res = 0.;
-                            for (k, input) in n.inputs.iter().enumerate() {
+                            for (k, connection) in n.connections.iter().enumerate() {
                                 //loop all inputs and sum
                                 let prev = &self.layers[L.id - 1];
-                                let val = prev.neurons[input.neuron].output * input.weight;
-                                println!("  L{}-N{}-I{} compute: o={} *w={}=val={}", n.layer_id, n.id, k, prev.neurons[input.neuron].output, input.weight, val);
+                                let val = prev.neurons[connection.neuron].output * connection.weight;
+                                println!("  L{}-N{}-I{} compute: o={} *w={}=val={}", n.layer_id, n.id, k, prev.neurons[connection.neuron].output, connection.weight, val);
                                 res = res + val;
                             }
                             outputs.push(res);//store in temp variable

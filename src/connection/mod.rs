@@ -1,5 +1,5 @@
 
-pub struct Input {
+pub struct Connection {
     pub layer: usize,
     pub neuron: usize,
     pub weight: f64,
