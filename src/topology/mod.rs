@@ -5,6 +5,8 @@ use transfer_functions::transfer_function;
 
 pub struct Topology {
     pub layers: Vec<Layer>,
+    pub targets:Vec<f64>,
+    pub error:f64
 }
 
 impl Topology {
@@ -164,5 +166,16 @@ impl Topology {
                 }
             }
         }
+    }
+    pub fn compute_errors(&mut self){
+        let mut error=0.;
+        for (idx,n) in self.layers.last().unwrap().neurons.iter().enumerate(){
+            let delta=self.targets[idx]-n.output;
+            error=error+delta*delta;
+        }
+        let N=self.layers.last().unwrap().neurons.len() as f64;
+        error=error/N;
+        error=error.sqrt();
+        self.error=error;
     }
 }
