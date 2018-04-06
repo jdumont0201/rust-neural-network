@@ -5,8 +5,8 @@ use transfer_functions::transfer_function;
 
 pub struct Topology {
     pub layers: Vec<Layer>,
-    pub targets:Vec<f64>,
-    pub error:f64
+    pub targets: Vec<f64>,
+    pub error: f64
 }
 
 impl Topology {
@@ -66,7 +66,7 @@ impl Topology {
          If initial layer, the single input
     */
     pub fn link_neurons(&mut self) {
-        let mut L = &mut self.layers;
+        let L = &mut self.layers;
         for l in 0..L.len() {
             //process layer l
             for n in 0..L[l].neurons.len() {
@@ -97,7 +97,7 @@ impl Topology {
     Prints content of the layer for debug or display purposes
     */
     pub fn print(&self) {
-        let mut L = &self.layers;
+        let L = &self.layers;
         for l in 0..L.len() {
             println!("Layer {}", l);
             L[l].print();
@@ -130,9 +130,7 @@ impl Topology {
                         }
                         false => {
                             let mut res = 0.;
-                            let mut k = 0;
-
-                            for input in n.inputs.iter() {
+                            for (k, input) in n.inputs.iter().enumerate() {
                                 //loop all inputs and sum
                                 let prev_opt = self.layers.get(L.id - 1);
                                 let val;
@@ -146,7 +144,6 @@ impl Topology {
                                         println!("!! accessing prev layer failed")
                                     }
                                 }
-                                k = k + 1;
                                 res = res + val;
                             }
                             outputs.push(res);//store in temp variable
@@ -156,26 +153,27 @@ impl Topology {
             }
             //write from temp variable
             {
-                let mut j = 0;
                 let mut LL = self.layers.get_mut(layer_id).unwrap();
-                for n in LL.neurons.iter_mut() {
+                for (j, n) in LL.neurons.iter_mut().enumerate() {
                     n.output = transfer_function(&n.transfer_function_type, outputs[j]);
-
-
-                    j + j + 1;
                 }
             }
         }
     }
-    pub fn compute_errors(&mut self){
-        let mut error=0.;
-        for (idx,n) in self.layers.last().unwrap().neurons.iter().enumerate(){
-            let delta=self.targets[idx]-n.output;
-            error=error+delta*delta;
+
+    /*
+    Compute the overall error.
+    Using RMS (mean square) method
+    */
+    pub fn compute_errors(&mut self) {
+        let mut error = 0.;
+        for (idx, n) in self.layers.last().unwrap().neurons.iter().enumerate() {
+            let delta = self.targets[idx] - n.output;
+            error = error + delta * delta;
         }
-        let N=self.layers.last().unwrap().neurons.len() as f64;
-        error=error/N;
-        error=error.sqrt();
-        self.error=error;
+        let N = self.layers.last().unwrap().neurons.len() as f64;
+        error = error / N;
+        error = error.sqrt();
+        self.error = error;
     }
 }

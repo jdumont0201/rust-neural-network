@@ -1,19 +1,16 @@
-use layer::Layer;
-use neuron::Neuron;
-use input::Input;
 
-pub enum TRANSFER_FUNCTION_TYPES {
+pub enum TransferFunctionTypes {
     LINEAR,
     BINARY,
     EXPONENTIAL,
     TANH
 }
-pub fn transfer_function(type_: &TRANSFER_FUNCTION_TYPES, val: f64) -> f64 {
+pub fn transfer_function(type_: &TransferFunctionTypes, val: f64) -> f64 {
     match type_{
-        &TRANSFER_FUNCTION_TYPES::LINEAR => { transfer_function_linear(val) }
-        &TRANSFER_FUNCTION_TYPES::BINARY => { transfer_function_binary(val) }
-        &TRANSFER_FUNCTION_TYPES::EXPONENTIAL => { transfer_function_exp(val) }
-        &TRANSFER_FUNCTION_TYPES::TANH => { transfer_function_tanh(val) }
+        &TransferFunctionTypes::LINEAR => { transfer_function_linear(val) }
+        &TransferFunctionTypes::BINARY => { transfer_function_binary(val) }
+        &TransferFunctionTypes::EXPONENTIAL => { transfer_function_exp(val) }
+        &TransferFunctionTypes::TANH => { transfer_function_tanh(val) }
         _=>{val }
     }
 }

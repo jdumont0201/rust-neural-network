@@ -9,8 +9,13 @@ mod transfer_functions;
 use topology::Topology;
 
 
+/*
+
+Creates a neural network and sets targets.
+
+*/
 fn main() {
-    println!("Rust Neural Networks");
+
     let mut T: Topology = Topology { layers: Vec::new(),targets:Vec::new(),error:1. };
     T.create_neurons([3, 2, 1].to_vec());
     T.link_neurons();

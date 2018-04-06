@@ -1,7 +1,7 @@
 use input::Input;
-use topology::Topology;
+//use topology::Topology;
 use layer::Layer;
-use transfer_functions::TRANSFER_FUNCTION_TYPES;
+use transfer_functions::TransferFunctionTypes;
 pub struct Neuron {
     pub id:i8,
     pub layer_id:usize,
@@ -10,7 +10,7 @@ pub struct Neuron {
     pub threshold: f64,
     pub is_initial: bool,    //single input
     pub is_bias: bool,//no input
-    pub transfer_function_type:TRANSFER_FUNCTION_TYPES
+    pub transfer_function_type:TransferFunctionTypes
 
 }
 
