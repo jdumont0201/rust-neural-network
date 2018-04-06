@@ -9,7 +9,7 @@ pub struct Topology {
     pub targets: Vec<f64>,
     pub error: f64
 }
-
+/* useful functions */
 impl Topology {
     /*
     A convinient get function to read the neuron neuron_nb of layer layer_nb
@@ -45,6 +45,9 @@ impl Topology {
             None => None
         }
     }
+}
+
+impl Topology {
     /*
     Creates the layers of the network and fills it with neurons and bias.
     */
@@ -68,13 +71,13 @@ impl Topology {
     */
     pub fn link_neurons(&mut self) {
         let L = &mut self.layers;
-        for l in 0..L.len() {
+        for idx in 0..L.len() {
             //process layer l
-            for n in 0..L[l].neurons.len() {
+            for n in 0..L[idx].neurons.len() {
                 //process neuron n of layer l
-                if l > 0 {
+                if idx > 0 {
                     //if layer is not initial layer, then link
-                    let prev = l - 1;
+                    let prev = idx - 1;
                     //create list of inputs for this neuron
                     let mut I = Vec::new();
                     for n2 in 0..L[prev].neurons.len() {
@@ -82,14 +85,15 @@ impl Topology {
                         let id = Input { layer: prev, neuron: n2, weight: random_weight(), val: 0. };
                         I.push(id);
                     }
-                    L[l].neurons[n].inputs = I;
-                    println!("Linking neuron L{}-N{} to {} neurons", l, n, L[l].neurons[n].inputs.len());
+                    println!("Linking neuron L{}-N{} to {} neurons", idx, n, I.len());
+                    L[idx].neurons[n].inputs = I;
+
                 } else {
                     let mut I = Vec::new();
                     let id = Input { layer: 0, neuron: 0, weight: 1., val: 0.64 };
                     I.push(id);
-                    L[l].neurons[n].inputs = I;
-                    println!("Linking neuron L{}-N{} to {} neurons", l, n, L[l].neurons[n].inputs.len());
+                    println!("Linking neuron L{}-N{} to {} neurons", idx, n, I.len());
+                    L[idx].neurons[n].inputs = I;
                 }
             }
         }
@@ -133,18 +137,9 @@ impl Topology {
                             let mut res = 0.;
                             for (k, input) in n.inputs.iter().enumerate() {
                                 //loop all inputs and sum
-                                let prev_opt = self.layers.get(L.id - 1);
-                                let val;
-                                match prev_opt {
-                                    Some(prev) => {
-                                        val = prev.neurons[input.neuron].output * input.weight;
-                                        println!("  L{}-N{}-I{} compute: o={} *w={}=val={}", n.layer_id, n.id, k, prev.neurons[input.neuron].output, input.weight, val);
-                                    }
-                                    None => {
-                                        val = 0.;
-                                        println!("!! accessing prev layer failed")
-                                    }
-                                }
+                                let prev = &self.layers[L.id - 1];
+                                let val = prev.neurons[input.neuron].output * input.weight;
+                                println!("  L{}-N{}-I{} compute: o={} *w={}=val={}", n.layer_id, n.id, k, prev.neurons[input.neuron].output, input.weight, val);
                                 res = res + val;
                             }
                             outputs.push(res);//store in temp variable
@@ -176,5 +171,18 @@ impl Topology {
         error = error / N;
         error = error.sqrt();
         self.error = error;
+    }
+    pub fn set_input_values(&mut self,inputs:Vec<f64>){
+        println!("set input values");
+        assert!(inputs.len()==self.layers[0].neurons.len());
+        for (idx,n) in self.layers[0].neurons.iter_mut().enumerate(){
+            //n.inputs[0].val=inputs[idx];
+            println!("set input val {}",idx);
+            n.output=inputs[idx];
+        }
+    }
+    pub fn set_targets(&mut self,targets:Vec<f64>){
+        println!("set targets");
+            self.targets=targets;
     }
 }
